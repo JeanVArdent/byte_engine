@@ -27,6 +27,6 @@ class Controller:
 
     def debug(self, *args):
         if self.debug and Debug.level >= self.debug_level:
-            logging.basicConfig(level=logging.DEBUGs)
+            logging.basicConfig(level=logging.DEBUG)
             for arg in args:
                 logging.debug(f'{self.__class__.__name__}: {arg}')

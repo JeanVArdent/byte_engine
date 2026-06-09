@@ -20,11 +20,11 @@ class TestInventoryController(unittest.TestCase):
         self.item: Item = Item()
         self.avatar: Avatar = Avatar(max_inventory_size=10)
 
-        self.inventory: [Item] = [Item(1), Item(2), Item(3), Item(4), Item(5), Item(6), Item(7), Item(8),
+        self.inventory: list[Item] = [Item(1), Item(2), Item(3), Item(4), Item(5), Item(6), Item(7), Item(8),
                                   Item(9), Item(10)]
 
         self.avatar.inventory = self.inventory
-        self.player: Player = Player(avatar=self.avatar)
+        self.player: Player = Player(avatars={ObjectType.AVATAR:self.avatar})
         self.game_board: GameBoard = GameBoard()
 
     # Testing accessing the right Item with the controller
@@ -87,10 +87,10 @@ class TestInventoryController(unittest.TestCase):
     # Tests accessing a slot of the inventory given an enum that's out of bounds
     def test_with_out_of_bounds(self):
         with self.assertRaises(IndexError) as e:
-            self.inventory: [Item] = [Item(1), Item(2), Item(3), Item(4), Item(5)]
+            self.inventory: list[Item] = [Item(1), Item(2), Item(3), Item(4), Item(5)]
             self.avatar.max_inventory_size = 5
             self.avatar.inventory = self.inventory
-            self.player: Player = Player(avatar=self.avatar)
+            self.player: Player = Player(avatars={ObjectType.AVATAR:self.avatar})
             self.inventory_controller.handle_actions(ActionType.SELECT_SLOT_9, self.player, self.game_board)
         self.assertEqual(str(e.exception), 'The given action type, SELECT_SLOT_9, is not within bounds of the given '
                                            'inventory of size 5. Select an ActionType enum '

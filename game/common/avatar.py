@@ -161,10 +161,6 @@ class Avatar(GameObject):
         return self.inventory[self.__held_index]
 
     @property
-    def score(self) -> int:
-        return self.__score
-
-    @property
     def position(self) -> Vector | None:
         return self.__position
 
@@ -193,14 +189,6 @@ class Avatar(GameObject):
 
         # If the item is contained in the inventory, set the held_index to that item's index
         self.__held_index = self.inventory.index(item)
-
-    @score.setter
-    def score(self, score: int) -> None:
-        if score is None or not isinstance(score, int):
-            raise ValueError(
-                f'{self.__class__.__name__}.score must be an int. It is a(n) {score.__class__.__name__} and has the value of '
-                f'{score}')
-        self.__score: int = score
 
     @position.setter
     def position(self, position: Vector | None) -> None:

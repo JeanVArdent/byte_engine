@@ -94,18 +94,19 @@ class TestPlayer(unittest.TestCase):
     # test avatar
     def test_avatar(self):
         self.avatar = Avatar()
-        self.player.avatar = self.avatar
+        self.player.avatars = { ObjectType.AVATAR:self.avatar }
+        self.player.select_avatar(ObjectType.AVATAR)
         self.assertEqual(self.player.avatar, self.avatar)
 
     def test_avatar_none(self):
         self.avatar = None
         self.assertEqual(self.player.avatar, self.avatar)
 
-    def test_avatar_fail_string(self):
+    def test_avatars_fail_string(self):
         value: int = 10
         with self.assertRaises(ValueError) as e:
-            self.player.avatar = value
-        self.assertTrue(self.utils.spell_check(str(e.exception), f'Player.avatar must be Avatar or None. It is a(n)'
+            self.player.avatars = value
+        self.assertTrue(self.utils.spell_check(str(e.exception), f'Player.avatars must be a dict with a key of ObjectType and a value of Avatar or None. It is a(n)'
                                                                  f' {value.__class__.__name__} and has the value of '
                                                                  f'{value}.', False))
 

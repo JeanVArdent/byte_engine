@@ -238,8 +238,8 @@ class ClientRunner:
                 results)
             for i, result in enumerate(results["players"]):
                 self.insert_submission_run_info(player_sub_ids[i], run_id, result["error"], i,
-                                                result["avatar"]["score"])
-                score_for_each_submission[player_sub_ids[i]] = result["avatar"]["score"]
+                                                result["score"])
+                score_for_each_submission[player_sub_ids[i]] = result["score"]
 
             # don't store logs with non-eligible teams
             if any([not submission.team.team_type.eligible for submission in submission_tuple]):

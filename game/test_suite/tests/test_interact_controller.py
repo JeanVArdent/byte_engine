@@ -41,7 +41,7 @@ class TestInteractController(unittest.TestCase):
             Vector(5, 6): [self.wall],
         }
         self.game_board: GameBoard = GameBoard(1, Vector(10, 10), self.locations, False)
-        self.player: Player = Player(None, None, [], self.avatar)
+        self.player: Player = Player(None, None, [], {ObjectType.AVATAR:self.avatar})
         self.game_board.generate_map()
 
     # interact and pick up nothing

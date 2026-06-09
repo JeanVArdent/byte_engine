@@ -1,5 +1,6 @@
 import unittest
 
+from game.common.enums import ObjectType
 from game.common.map.game_board import GameBoard
 from game.controllers.movement_controller import MovementController
 from game.common.stations.station import Station
@@ -23,7 +24,7 @@ class TestMovementControllerIfWall(unittest.TestCase):
     def setUp(self) -> None:
         self.movement_controller = MovementController()
         self.avatar = Avatar(Vector(2, 2), 1)
-        self.locations: dict[tuple[Vector]: list[GameObject]] = {
+        self.locations: dict[Vector,list[GameObject]] = {
             Vector(2, 1): [OccupiableStation()],
             Vector(1, 2): [Station()],
             Vector(3, 2): [Wall()],
@@ -34,7 +35,7 @@ class TestMovementControllerIfWall(unittest.TestCase):
         self.game_board = GameBoard(0, Vector(4, 4), self.locations, False)
 
         # test movements up, down, left and right by starting with default 3,3 then know if it changes from there \/
-        self.client = Player(None, None, [], self.avatar)
+        self.client = Player(None, None, [], {ObjectType.AVATAR:self.avatar})
         self.game_board.generate_map()
 
     # test move up

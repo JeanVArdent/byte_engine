@@ -59,6 +59,7 @@ class ActionType(Enum):
     PLACE_ITEM_DOWN = auto()
     PLACE_ITEM_LEFT = auto()
     PLACE_ITEM_RIGHT = auto()
+    SELECT_DEFAULT_AVATAR = auto()
     """
     These last 10 enums are for selecting a slot from the Avatar class' inventory.
     You can add/remove these as needed for the purposes of your game. 

@@ -12,10 +12,10 @@ class TestPlaceController(unittest.TestCase):
         self.avatar = Avatar(max_inventory_size=1)
         self.item: Item = Item()
         self.avatar.inventory = [self.item]
-        self.client: Player = Player(avatar=self.avatar)
+        self.client: Player = Player(avatars={ObjectType.AVATAR:self.avatar})
         self.avatar.held_item = self.item
 
-        self.locations: dict[tuple[Vector]: list[GameObject]] = {
+        self.locations: dict[tuple[Vector],list[GameObject]] = {
             Vector(1, 2): [self.avatar],
         }
 

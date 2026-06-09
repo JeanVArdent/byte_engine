@@ -42,7 +42,7 @@ class ByteVisualiser:
         pygame.init()
         self.logs = log_dir
         self.config: Config = Config()
-        self.turn_logs: dict[str:dict] = {}
+        self.turn_logs: dict[str, dict] = {}
         self.size: Vector = self.config.SCREEN_SIZE
         self.tile_size: int = self.config.TILE_SIZE
 
@@ -55,7 +55,7 @@ class ByteVisualiser:
 
         self.tick: int = turn_start * self.config.NUMBER_OF_FRAMES_PER_TURN
         self.turn_end: int = turn_end
-        self.bytesprite_factories: dict[int: Callable[[pygame.Surface], ByteSprite]] = {}
+        self.bytesprite_factories: dict[int, Callable[[pygame.Surface], ByteSprite]] = {}
         self.bytesprite_map: list[list[list[ByteSprite]]] = list()
 
         self.default_frame_rate: int = self.config.FRAME_RATE
@@ -273,7 +273,7 @@ class ByteVisualiser:
         self.__turn_end: int = turn_end
 
     @property
-    def bytesprite_factories(self) -> dict[int: Callable[[pygame.Surface], ByteSprite]]:
+    def bytesprite_factories(self) -> dict[int, Callable[[pygame.Surface], ByteSprite]]:
         """
         Property getter.
         :return: A dictionary with the int representation of the target ObjectType as the key and

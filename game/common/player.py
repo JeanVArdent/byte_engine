@@ -1,8 +1,7 @@
-from game.common.action import Action
-from game.common.game_object import GameObject
+from game.client.user_client import UserClient
 from game.common.avatar import Avatar
 from game.common.enums import *
-from game.client.user_client import UserClient
+from game.common.game_object import GameObject
 
 
 class Player(GameObject):
@@ -18,7 +17,7 @@ class Player(GameObject):
     """
 
     def __init__(self, code: object | None = None, team_name: str | None = None, actions: list[ActionType] = [],
-                 avatar: Avatar | None = None):
+                 avatars: dict[ObjectType, Avatar] | None = None):
         super().__init__()
         self.object_type: ObjectType = ObjectType.PLAYER
         self.functional: bool = True
@@ -26,9 +25,10 @@ class Player(GameObject):
         self.file_name: str | None = None
         self.team_name: str | None = team_name
         self.code: UserClient | None = code
-        # self.action: Action = action
         self.actions: list[ActionType] = actions
-        self.avatar: Avatar | None = avatar
+        self.avatars: dict[ObjectType, Avatar] | None = avatars
+        self.__selected_avatar_type: ObjectType = ObjectType.AVATAR
+        self.score: int = 0
 
     @property
     def error(self) -> str | None:
@@ -89,15 +89,41 @@ class Player(GameObject):
         self.__file_name = file_name
 
     @property
-    def avatar(self) -> Avatar:
-        return self.__avatar
+    def avatars(self) -> dict[ObjectType, Avatar]:
+        return self.__avatars
 
-    @avatar.setter
-    def avatar(self, avatar: Avatar) -> None:
-        if avatar is not None and not isinstance(avatar, Avatar):
+    @avatars.setter
+    def avatars(self, avatars: dict[ObjectType, Avatar]) -> None:
+        if (avatars is not None and not (isinstance(avatars, dict)
+                and len(avatars) > 0
+                and all(map(lambda name_and_avatar: isinstance(name_and_avatar[0], ObjectType) and isinstance(name_and_avatar[1], Avatar), avatars.items())))):
             raise ValueError(
-                f'{self.__class__.__name__}.avatar must be Avatar or None. It is a(n) {avatar.__class__.__name__} and has the value of {avatar}.')
-        self.__avatar = avatar
+                f'{self.__class__.__name__}.avatars must be a dict with a key of ObjectType and a value of Avatar or None. It is a(n) {avatars.__class__.__name__} and has the value of {avatars}.')
+        self.__avatars = avatars
+
+    def select_avatar(self, avatar_type: ObjectType) -> None:
+        if avatar_type is None or not isinstance(avatar_type, ObjectType):
+            raise ValueError(
+                f'avatar_name must be a ObjectType. It is a(n) {avatar_type.__class__.__name__} and has the value of '
+                f'{avatar_type}'
+            )
+        self.__selected_avatar_type = avatar_type
+
+    @property
+    def avatar(self) -> Avatar | None:
+        return self.avatars.get(self.__selected_avatar_type, None) if self.avatars is not None else None
+
+    @property
+    def score(self) -> int:
+        return self.__score
+
+    @score.setter
+    def score(self, score: int) -> None:
+        if score is None or not isinstance(score, int):
+            raise ValueError(
+                f'{self.__class__.__name__}.score must be an int. It is a(n) {score.__class__.__name__} and has the value of '
+                f'{score}')
+        self.__score: int = score
 
     @property
     def object_type(self) -> ObjectType:
@@ -118,7 +144,9 @@ class Player(GameObject):
         data['team_name'] = self.team_name
         data['file_name'] = self.file_name
         data['actions'] = [act.value for act in self.actions]
-        data['avatar'] = self.avatar.to_json() if self.avatar is not None else None
+        data['selected_avatar_type'] = self.__selected_avatar_type
+        data['avatars'] = { k: v.to_json() if v is not None else None for k, v in self.avatars} if self.avatars is not None else None
+        data['score'] = self.score
 
         return data
 
@@ -129,32 +157,15 @@ class Player(GameObject):
         self.error = data['error']
         self.team_name = data['team_name']
         self.file_name = data['file_name']
-
-        self.actions: list[ActionType] = [ObjectType(action) for action in data['actions']]
-        avatar: Avatar | None = data['avatar']
-        if avatar is None:
-            self.avatar = None
+        self.score = data['score']
+        self.actions: list[ActionType] = [ActionType(action) for action in data['actions']]
+        self.__selected_avatar_type = data['selected_avatar_type']
+        avatars: dict[str, Avatar] = data['avatars']
+        if avatars is None:
+            self.avatars = None
             return self
-        # match case for action
-        # match action['object_type']:
-        #     case ObjectType.ACTION:
-        #         self.action = Action().from_json(data['action'])
-        #     case None:
-        #         self.action = None
-        #     case _:  # checks if it is anything else
-        #         raise Exception(f'Could not parse action: {self.action}')
-
-        # match case for avatar
-        match ObjectType(avatar['object_type']):
-            case ObjectType.AVATAR:
-                self.avatar = Avatar().from_json(data['avatar'])
-            case None:
-                self.avatar = None
-            case _:
-                raise Exception(f'Could not parse avatar: {self.avatar}')
+        self.avatars = { k:Avatar().from_json(v) if v is not None else None for k, v in data['avatars']}
         return self
-        # self.action = Action().from_json(data['action']) if data['action'] is not None else None
-        # self.avatar = Avatar().from_json(data['avatar']) if data['avatar'] is not None else None
 
     # to String
     def __str__(self):

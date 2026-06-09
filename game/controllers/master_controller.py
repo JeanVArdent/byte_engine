@@ -6,6 +6,7 @@ from game.common.avatar import Avatar
 from game.common.enums import *
 from game.common.player import Player
 import game.config as config   # this is for turns
+from game.controllers.avatar_selection_controller import AvatarSelectionController
 from game.utils.thread import CommunicationThread
 from game.controllers.movement_controller import MovementController
 from game.controllers.controller import Controller
@@ -54,6 +55,7 @@ class MasterController(Controller):
         self.current_world_data: dict = None
         self.movement_controller: MovementController = MovementController()
         self.interact_controller: InteractController = InteractController()
+        self.avatar_selection_controller: AvatarSelectionController = AvatarSelectionController()
 
     # Receives all clients for the purpose of giving them the objects they will control
     def give_clients_objects(self, clients: list[Player], world: dict):
@@ -62,7 +64,8 @@ class MasterController(Controller):
         avatars: list[tuple[Vector, list[Avatar]]] = gb.get_objects(ObjectType.AVATAR)
         for avatar, client in zip(avatars, clients):
             avatar[1][0].position = avatar[0]
-            client.avatar = avatar[1][0]
+            client.avatars = { ObjectType.AVATAR:avatar[1][0] }
+            client.select_avatar(ObjectType.AVATAR)
 
     # Generator function. Given a key:value pair where the key is the identifier for the current world and the value is
     # the state of the world, returns the key that will give the appropriate world information
@@ -95,10 +98,11 @@ class MasterController(Controller):
 
         # Create deep copies of all objects sent to the player
         current_world = deepcopy(self.current_world_data["game_board"])    # what is current world and copy avatar
+        copy_avatars = deepcopy(client.avatars)
         copy_avatar = deepcopy(client.avatar)
         # Obfuscate data in objects that that player should not be able to see
         # Currently world data isn't obfuscated at all
-        args = (self.turn, turn_actions, current_world, copy_avatar)
+        args = (self.turn, turn_actions, current_world, copy_avatars, copy_avatar)
         return args
 
     # Perform the main logic that happens per turn
@@ -106,6 +110,7 @@ class MasterController(Controller):
         for client in clients:
             for i in range(MAX_NUMBER_OF_ACTIONS_PER_TURN):
                 try:
+                    self.avatar_selection_controller.handle_actions(client.actions[i], client, self.current_world_data["game_board"])
                     self.movement_controller.handle_actions(client.actions[i], client, self.current_world_data["game_board"])
                     self.interact_controller.handle_actions(client.actions[i], client, self.current_world_data["game_board"])
                 except IndexError:

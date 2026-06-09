@@ -19,7 +19,7 @@ class TestGameBoard(unittest.TestCase):
     `Test Gameboard Notes:`
 
         This class tests the different methods in the Gameboard class. This file is worthwhile to look at to understand
-        the GamebBoard class better if there is still confusion on it.
+        the GameBoard class better if there is still confusion on it.
 
         *This class tests the Gameboard specifically when the map is generated.*
     """
