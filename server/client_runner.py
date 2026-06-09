@@ -242,17 +242,15 @@ class ClientRunner:
                 score_for_each_submission[player_sub_ids[i]] = result["score"]
 
             # don't store logs with non-eligible teams
-            if any([not submission.team.team_type.eligible for submission in submission_tuple]):
-                return
-
-            # Update information in best run dict
-            for submission in submission_tuple:
-                if (score_for_each_submission[submission.submission_id] >
-                        self.best_run_for_client.get(submission.submission_id, {'score': -2})['score']):
-                    self.best_run_for_client[submission.submission_id] = {}
-                    self.best_run_for_client[submission.submission_id]["log_path"] = os.path.join(end_path, 'logs')
-                    self.best_run_for_client[submission.submission_id]["run_id"] = run_id
-                    self.best_run_for_client[submission.submission_id]["score"] = score_for_each_submission[submission.submission_id]
+            if not any([not submission.team.team_type.eligible for submission in submission_tuple]):
+                # Update information in best run dict
+                for submission in submission_tuple:
+                    if (score_for_each_submission[submission.submission_id] >
+                            self.best_run_for_client.get(submission.submission_id, {'score': -2})['score']):
+                        self.best_run_for_client[submission.submission_id] = {}
+                        self.best_run_for_client[submission.submission_id]["log_path"] = os.path.join(end_path, 'logs')
+                        self.best_run_for_client[submission.submission_id]["run_id"] = run_id
+                        self.best_run_for_client[submission.submission_id]["score"] = score_for_each_submission[submission.submission_id]
 
     def run_runner(self, end_path, runner) -> bytes:
         """

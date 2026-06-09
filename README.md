@@ -123,12 +123,12 @@ Changes made in 2023.
 * Avatar VS Player Classes
   * These two classes are often confused with each other. Here are their differences.
   * Avatar:
-    * The Avatar class represents the character that is in the game. The Avatar is 
+    * The Avatar class represents the character or characters that are in the game. The Avatar is 
     what moves around, interacts with other GameObjects, gains points, and whatever else 
     the developers implement.
 
   * Player:
-    * The Player object encapsulates the Avatar class and represents the physical 
+    * The Player object encapsulates the Avatar class or classes and represents the physical 
     people competing in the competition. This is why it has parameters such as team_name.
     It is also why the controllers take a Player object as a parameter and not an Avatar
     object; it helps manage the information gathered for the individual competitors/teams for
@@ -150,6 +150,8 @@ Changes made in 2023.
   * Movement Controller Class
     * This class manages moving the player through the game board by using the given enums.
 
+  * Avatar Selection Controller Class
+    * This class is used to select different avatars for the player.
 
 * Generate Game File
   * This file has a single method that's used to generate the game map. The 
@@ -185,6 +187,13 @@ Changes made in 2023.
   * Lastly, documentation is a great method to stay organized too. Having someone to 
   write what is discussed in meetings can be useful; you won't easily lose track of 
   what's discussed.
+* Tools
+  * Excalidraw - https://excalidraw.com/
+    * Excalidraw is a collaborative whiteboarding tool which is useful for creating diagrams on the fly
+  * Mermaid - https://mermaid.js.org/
+    * Mermaid is a tool to create diagrams, including UML diagrams using text and code 
+  * PlantUML - https://plantuml.com/
+    * PlantUML is another diagramming tool, similar to mermaid.
 
 
 
